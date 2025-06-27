@@ -1321,6 +1321,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: VFXManager
       objectReference: {fileID: 0}
+    - target: {fileID: 8876319977394267880, guid: 7a0fb0dce22c2e448aa192f9c8cdd382,
+        type: 3}
+      propertyPath: bubblePopEffect
+      value: 
+      objectReference: {fileID: 1466095532762108819, guid: 0552246b807da74448f864ccbacb0547,
+        type: 3}
+    - target: {fileID: 8876319977394267880, guid: 7a0fb0dce22c2e448aa192f9c8cdd382,
+        type: 3}
+      propertyPath: plantGrowEffect
+      value: 
+      objectReference: {fileID: 4963741407923451576, guid: 1f76d20d855465a4ba50b7af79ae3860,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

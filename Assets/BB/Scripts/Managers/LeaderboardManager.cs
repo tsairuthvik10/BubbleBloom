@@ -44,20 +44,20 @@ public class LeaderboardManager : MonoBehaviour
 
     public async void SubmitScore(int newScore, int longestCombo)
     {
-        Debug.Log("LEVEL ENDED! LM: SubmitScore: Final Score: before check" + newScore);
+        //Debug.Log("LEVEL ENDED! LM: SubmitScore: Final Score: before check" + newScore);
         if (string.IsNullOrEmpty(userId) || localPlayerStats == null) return;
         localPlayerStats.longestCombo = Mathf.Max(localPlayerStats.longestCombo, longestCombo);
         if (newScore > localPlayerStats.highestScore) localPlayerStats.highestScore = newScore;
         localPlayerStats.totalPlantsBloomed++;
-        Debug.Log("LEVEL ENDED! LM: SubmitScore: Final Score: " + newScore);
+        //Debug.Log("LEVEL ENDED! LM: SubmitScore: Final Score: " + newScore);
 
         try
         {
             localPlayerStats.playerName = ProfileManager.Instance.PlayerName;
-            Debug.Log("fetching local player stats: " + localPlayerStats.playerName);
+            //Debug.Log("fetching local player stats: " + localPlayerStats.playerName);
             DocumentReference docRef = db.Collection("leaderboard").Document(userId);
             await docRef.SetAsync(localPlayerStats);
-            Debug.Log("fetching local player stats after async");
+            //Debug.Log("fetching local player stats after async");
         }
         catch(Exception ex)
         {
@@ -67,53 +67,53 @@ public class LeaderboardManager : MonoBehaviour
 
     private async void LoadPlayerStats()
     {
-        Debug.Log("LoadPlayerStats started");
+        //Debug.Log("LoadPlayerStats started");
 
-        Debug.Log("UserId: " + userId);
+        //Debug.Log("UserId: " + userId);
         if (string.IsNullOrEmpty(userId))
         {
-            Debug.Log("UserId is null or empty, returning early.");
+            //Debug.Log("UserId is null or empty, returning early.");
             return;
         }
 
         string playerName = null;
         try
         {
-            Debug.Log("Fetching PlayerPrefs");
+            //Debug.Log("Fetching PlayerPrefs");
             playerName = PlayerPrefs.GetString("PlayerName", null);
             if (string.IsNullOrEmpty(playerName))
             {
-                Debug.Log("Generating random player name");
+                //Debug.Log("Generating random player name");
                 System.Random rng = new System.Random();
                 playerName = "Player" + rng.Next(1000, 9999);
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError("Error fetching PlayerPrefs or generating name: " + e.Message);
+            Debug.Log("Error fetching PlayerPrefs or generating name: " + e.Message);
         }
 
         try
         {
-            Debug.Log("Starting snapshot retrieval...");
+            //Debug.Log("Starting snapshot retrieval...");
             DocumentReference docRef = db.Collection("leaderboard").Document(userId);
             DocumentSnapshot snapshot = await docRef.GetSnapshotAsync();
-            Debug.Log("Snapshot retrieval completed.");
+            //Debug.Log("Snapshot retrieval completed.");
 
             if (snapshot.Exists)
             {
                 localPlayerStats = snapshot.ConvertTo<PlayerStats>();
-                Debug.Log("Loaded player stats from snapshot.");
+                //Debug.Log("Loaded player stats from snapshot.");
             }
             else
             {
                 localPlayerStats = new PlayerStats(playerName);
-                Debug.Log("Created new player stats.");
+                //Debug.Log("Created new player stats.");
             }
         }
         catch (System.Exception e)
         {
-            Debug.LogError("Error loading player stats from Firestore: " + e.Message);
+            Debug.Log("Error loading player stats from Firestore: " + e.Message);
         }
     }
 

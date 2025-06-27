@@ -67,10 +67,10 @@ public class UIManager : MonoBehaviour
     public void ShowSummaryPanel()
     {
         if(summaryPanel == null) return;
-        Debug.Log("LEVEL ENDED! UIM: ShowSummaryPanel: Final Score: " + GameManager.Instance.currentScore);
+        //Debug.Log("LEVEL ENDED! UIM: ShowSummaryPanel: Final Score: " + GameManager.Instance.currentScore);
         int finalScore = GameManager.Instance.currentScore;
         int longestCombo = GameManager.Instance.GetSessionLongestCombo();
-        Debug.Log("LEVEL ENDED! UIM: ShowSummaryPanel: Final Score after getting longest combo: " + GameManager.Instance.currentScore);
+        //Debug.Log("LEVEL ENDED! UIM: ShowSummaryPanel: Final Score after getting longest combo: " + GameManager.Instance.currentScore);
         if (summaryScoreText != null) summaryScoreText.text = $"Final Score: {finalScore}";
         if(summaryComboText != null) summaryComboText.text = $"Best Combo: {longestCombo}";
 
@@ -119,7 +119,7 @@ public class UIManager : MonoBehaviour
 
         if (snapshot == null) 
         {
-            Debug.LogError("Leaderboard snapshot is null! Check Firebase connection and rules.");
+            Debug.Log("Leaderboard snapshot is null! Check Firebase connection and rules.");
             return;
         }
 
@@ -133,7 +133,7 @@ public class UIManager : MonoBehaviour
 
                 if (entryUI == null)
                 {
-                    Debug.LogError("FATAL: LeaderboardEntry_Prefab is MISSING the LeaderboardEntryUI script! Please attach it.");
+                    Debug.Log("FATAL: LeaderboardEntry_Prefab is MISSING the LeaderboardEntryUI script! Please attach it.");
                     continue;
                 }
 

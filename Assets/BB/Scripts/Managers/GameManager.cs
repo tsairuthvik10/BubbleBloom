@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
     {
         if (levelEnded) return;
         levelEnded = true;
-        Debug.Log("LEVEL ENDED! Final Score: " + currentScore);
+        //Debug.Log("LEVEL ENDED! Final Score: " + currentScore);
 
         if (plantPrefab != null && sessionLongestCombo > 5)
         {
