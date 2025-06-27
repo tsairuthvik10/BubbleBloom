@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: adcacc1989d14460f8b115a620e88375
+guid: c475887b81ce263479a6412bda7d1460
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
   externalObjects: {}
   materials:
-    materialImportMode: 0
+    materialImportMode: 2
     materialName: 0
     materialSearch: 1
     materialLocation: 1
@@ -16,8 +16,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -107,10 +105,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 301026
-  packageName: 3D Mini Garden Props
-  packageVersion: 1.0
-  assetPath: Assets/MamkinEnthusiast/3D Mini Garden Props/Models/PotBig.fbx
-  uploadId: 704256
