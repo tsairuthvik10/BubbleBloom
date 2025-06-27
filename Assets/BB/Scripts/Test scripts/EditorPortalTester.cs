@@ -38,10 +38,10 @@ public class PortalEditorTest : MonoBehaviour
         // --- 2. Simulate Walking Forward with 'W' Key ---
         if (spawnedPortal != null)
         {
-            if (Input.GetKey(KeyCode.W))
-            {
-                mainCamera.transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
-            }
+            //if (Input.GetKey(KeyCode.W))
+            //{
+            //    mainCamera.transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
+            //}
 
             // Check if we've "walked" through the portal
             CheckForTeleport();
@@ -53,9 +53,10 @@ public class PortalEditorTest : MonoBehaviour
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            spawnedPortal = Instantiate(portalPrefab, hit.point, Quaternion.identity);
-            Vector3 lookAtPos = new Vector3(mainCamera.transform.position.x, spawnedPortal.transform.position.y, mainCamera.transform.position.z);
-            spawnedPortal.transform.LookAt(lookAtPos);
+            Vector3 portalPos = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
+            spawnedPortal = Instantiate(portalPrefab, portalPos, Quaternion.identity);
+            //Vector3 lookAtPos = new Vector3(mainCamera.transform.position.x, spawnedPortal.transform.position.y + 0.5f, mainCamera.transform.position.z);
+            //spawnedPortal.transform.LookAt(lookAtPos);
             Debug.Log("Portal spawned. Press and hold 'W' to walk forward.");
         }
     }

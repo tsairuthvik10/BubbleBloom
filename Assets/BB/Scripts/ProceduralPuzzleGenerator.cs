@@ -5,7 +5,17 @@ public class ProceduralPuzzleGenerator : MonoBehaviour
     [Header("Settings")]
     public GameObject bubblePrefab;
     public int numberOfBubblesToPlace = 100;
+    public GameObject testfloor;
 
+    private void OnEnable()
+    {
+        testfloor.SetActive(false);
+    }
+
+    public void OnDisable()
+    {
+        testfloor.SetActive(true);
+    }
     void Start()
     {
         foreach (MeshFilter mf in GetComponentsInChildren<MeshFilter>())
