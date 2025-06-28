@@ -1,7 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI; // **NEW**: Required for LayoutRebuilder
 using TMPro;
-using Firebase.Firestore;
+using Firebase.Firestore; // Assuming you'll use this for leaderboard
+using System.Collections;
+using UnityEngine.UI; // Required for LayoutRebuilder
 
 public class UIManager : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class UIManager : MonoBehaviour
     public GameObject summaryPanel;
     public GameObject leaderboardPanel;
     public GameObject profileCreationPanel;
+
+    // We get the animator components from the panels
+    private UI_Animator summaryAnimator;
+    private UI_Animator leaderboardAnimator;
 
     [Header("HUD")]
     public TextMeshProUGUI scoreText;
@@ -27,10 +32,21 @@ public class UIManager : MonoBehaviour
     public Transform leaderboardContentArea;
     public TMP_Dropdown leaderboardSortDropdown;
 
+    [Header("Feedback")]
+    public GameObject floatingTextPrefab; // Assign your new FloatingText_Prefab
+    public Canvas mainCanvas; // Assign your main UI Canvas
+
+    private Coroutine scoreTextCoroutine;
+    private Coroutine comboTextCoroutine;
+
     void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
+
+        // Get the animator components from the panels if they exist
+        if (summaryPanel != null) summaryAnimator = summaryPanel.GetComponent<UI_Animator>();
+        if (leaderboardPanel != null) leaderboardAnimator = leaderboardPanel.GetComponent<UI_Animator>();
     }
 
     void Start()
@@ -39,23 +55,68 @@ public class UIManager : MonoBehaviour
         {
             leaderboardSortDropdown.onValueChanged.AddListener(delegate { OnSortChanged(); });
         }
-        
-        if(summaryPanel != null) summaryPanel.SetActive(false);
-        if(leaderboardPanel != null) leaderboardPanel.SetActive(false);
-        if(hudPanel != null && ProfileManager.Instance != null && !string.IsNullOrEmpty(ProfileManager.Instance.PlayerName)) 
+
+        // Hide panels on start without animation
+        if (summaryPanel != null) summaryPanel.SetActive(false);
+        if (leaderboardPanel != null) leaderboardPanel.SetActive(false);
+    }
+
+    public void UpdateScore(int score)
+    {
+        if (scoreText != null)
         {
-            hudPanel.SetActive(true);
+            scoreText.text = $"Score: {score}";
+            if (scoreTextCoroutine != null) StopCoroutine(scoreTextCoroutine);
+            scoreTextCoroutine = StartCoroutine(AnimateScoreText());
         }
     }
-    
-    public void UpdateScore(int score) => scoreText.text = $"Score: {score}";
+
+    private IEnumerator AnimateScoreText()
+    {
+        float duration = 0.25f;
+        float timer = 0;
+        while (timer < duration / 2)
+        {
+            scoreText.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.3f, timer / (duration / 2));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        timer = 0;
+        while (timer < duration / 2)
+        {
+            scoreText.transform.localScale = Vector3.Lerp(Vector3.one * 1.3f, Vector3.one, timer / (duration / 2));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        scoreText.transform.localScale = Vector3.one;
+    }
+
     public void UpdateCombo(int combo)
     {
-        if(comboText == null) return;
+        if (comboText == null) return;
+
         comboText.gameObject.SetActive(combo > 1);
-        if(combo > 1) comboText.text = $"Combo x{combo}!";
+        if (combo > 1)
+        {
+            comboText.text = $"x{combo} Combo!";
+            if (comboTextCoroutine != null) StopCoroutine(comboTextCoroutine);
+            comboTextCoroutine = StartCoroutine(ComboTextAnimation());
+        }
     }
-    
+
+    private IEnumerator ComboTextAnimation()
+    {
+        comboText.transform.localScale = Vector3.one * 1.5f;
+        float t = 0;
+        while (t < 1)
+        {
+            t += Time.deltaTime * 4f;
+            comboText.transform.localScale = Vector3.Lerp(Vector3.one * 1.5f, Vector3.one, t);
+            yield return null;
+        }
+    }
+
     public void UpdateTimer(float time)
     {
         if (timerText != null)
@@ -64,42 +125,69 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowFloatingScore(int points, Vector3 worldPosition)
+    {
+        if (floatingTextPrefab == null || mainCanvas == null) return;
+
+        GameObject textGO = Instantiate(floatingTextPrefab, mainCanvas.transform);
+
+        TextMeshProUGUI tmpText = textGO.GetComponent<TextMeshProUGUI>();
+        if (tmpText != null)
+        {
+            tmpText.text = $"+{points}";
+        }
+
+        Vector2 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+        screenPosition.x += Random.Range(-20f, 20f);
+        screenPosition.y += Random.Range(-20f, 20f);
+        textGO.transform.position = screenPosition;
+    }
+
     public void ShowSummaryPanel()
     {
-        if(summaryPanel == null) return;
-        //Debug.Log("LEVEL ENDED! UIM: ShowSummaryPanel: Final Score: " + GameManager.Instance.currentScore);
+        if (summaryPanel == null) return;
+
         int finalScore = GameManager.Instance.currentScore;
         int longestCombo = GameManager.Instance.GetSessionLongestCombo();
-        //Debug.Log("LEVEL ENDED! UIM: ShowSummaryPanel: Final Score after getting longest combo: " + GameManager.Instance.currentScore);
         if (summaryScoreText != null) summaryScoreText.text = $"Final Score: {finalScore}";
-        if(summaryComboText != null) summaryComboText.text = $"Best Combo: {longestCombo}";
+        if (summaryComboText != null) summaryComboText.text = $"Best Combo: {longestCombo}";
 
-        if(hudPanel != null) hudPanel.SetActive(false);
-        if(leaderboardPanel != null) leaderboardPanel.SetActive(false);
-        summaryPanel.SetActive(true);
+        if (hudPanel != null) hudPanel.SetActive(false);
+
+        if (summaryAnimator != null)
+        {
+            summaryAnimator.AnimateIn();
+        }
+        else
+        {
+            summaryPanel.SetActive(true);
+        }
     }
 
     public void OnViewLeaderboardClicked()
     {
-        if(leaderboardPanel == null || LeaderboardManager.Instance == null) return;
-        if(summaryPanel != null) summaryPanel.SetActive(false);
-        leaderboardPanel.SetActive(true);
+        if (leaderboardPanel == null) return;
+
+        if (summaryAnimator != null) summaryAnimator.AnimateOut();
+        if (leaderboardAnimator != null) leaderboardAnimator.AnimateIn();
+
         OnSortChanged();
     }
 
     public void OnCloseLeaderboardClicked()
     {
-        if(leaderboardPanel == null || summaryPanel == null) return;
-        leaderboardPanel.SetActive(false);
-        summaryPanel.SetActive(true);
+        if (leaderboardPanel == null) return;
+
+        if (leaderboardAnimator != null) leaderboardAnimator.AnimateOut();
+        if (summaryAnimator != null) summaryAnimator.AnimateIn();
     }
 
     private async void OnSortChanged()
     {
-        if(!leaderboardPanel.activeSelf || LeaderboardManager.Instance == null) return;
+        if (!leaderboardPanel.activeSelf || LeaderboardManager.Instance == null) return;
 
         string sortByField = "highestScore";
-        if(leaderboardSortDropdown != null)
+        if (leaderboardSortDropdown != null)
         {
             switch (leaderboardSortDropdown.value)
             {
@@ -107,21 +195,15 @@ public class UIManager : MonoBehaviour
                 case 2: sortByField = "totalPlantsBloomed"; break;
             }
         }
-        
+
         var snapshot = await LeaderboardManager.Instance.FetchLeaderboard(sortByField);
         DisplayLeaderboard(snapshot, sortByField);
     }
 
     private void DisplayLeaderboard(QuerySnapshot snapshot, string statField)
     {
-        // Clear old entries before displaying new ones
         foreach (Transform child in leaderboardContentArea) Destroy(child.gameObject);
-
-        if (snapshot == null) 
-        {
-            Debug.Log("Leaderboard snapshot is null! Check Firebase connection and rules.");
-            return;
-        }
+        if (snapshot == null) return;
 
         int rank = 1;
         foreach (DocumentSnapshot document in snapshot.Documents)
@@ -133,27 +215,23 @@ public class UIManager : MonoBehaviour
 
                 if (entryUI == null)
                 {
-                    Debug.Log("FATAL: LeaderboardEntry_Prefab is MISSING the LeaderboardEntryUI script! Please attach it.");
+                    Debug.LogError("LeaderboardEntry_Prefab is missing the LeaderboardEntryUI script!");
                     continue;
                 }
 
                 PlayerStats stats = document.ConvertTo<PlayerStats>();
-                
+
                 string statValue = "N/A";
-                if(document.ContainsField(statField))
+                if (document.ContainsField(statField))
                 {
                     statValue = document.GetValue<object>(statField).ToString();
                 }
 
-                // Use the script to set the data safely
                 entryUI.SetData(rank, stats.playerName, statValue);
                 rank++;
             }
         }
-        
-        // ** THE FIX **
-        // Force the layout group to update immediately. This ensures the newly
-        // instantiated items are properly sized and positioned in the same frame.
+
         LayoutRebuilder.ForceRebuildLayoutImmediate(leaderboardContentArea as RectTransform);
     }
 }

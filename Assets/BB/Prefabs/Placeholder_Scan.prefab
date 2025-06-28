@@ -66,30 +66,5 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c475887b81ce263479a6412bda7d1460,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1835818956868356208}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c475887b81ce263479a6412bda7d1460, type: 3}
---- !u!1 &6196990723304984003 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c475887b81ce263479a6412bda7d1460,
-    type: 3}
-  m_PrefabInstance: {fileID: 6539591607529844882}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1835818956868356208
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6196990723304984003}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 07958d5585b93054e9244988c6e7a5e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bubblePrefab: {fileID: 1796772751130973810, guid: e5f9ad879d0e8bd4f9bb009a833d5bb8,
-    type: 3}
-  numberOfBubblesToPlace: 100
