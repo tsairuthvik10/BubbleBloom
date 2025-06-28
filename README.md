@@ -1,10 +1,10 @@
-🫧 Bubble Bloom - Hackathon Submission
+🫧 #Bubble Bloom - Hackathon Submission
 A location-based, procedural AR puzzle game built on the Augg.io platform.
 
-🎥 Live Demo Video
+🎥 #Live Demo Video
 (Your 90-second video should be embedded here. It is the most important part of your submission!)
 
-▶️ Watch the Demo Video on YouTube/Vimeo
+▶️ #Watch the Demo Video on YouTube/Vimeo
 
 ✨ Core Concept
 Bubble Bloom transforms real-world scanned locations into magical, playable gardens. Players find and pop bubbles to create satisfying chain reactions, scoring points based on skill and strategy. Successful combos are rewarded by growing persistent, beautiful AR plants directly onto the real-world mesh.
