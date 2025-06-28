@@ -15,43 +15,33 @@ The game is designed around a subtle environmental message. Instead of lectures,
 🔁 Game Loop Flow
 The core gameplay is a session-based loop designed for tension and reward. The player's goal is to survive the countdown timer by creating chain reactions to add more time, achieving the highest score possible.
 
-┌───────────────────────────────────┐
-│   1. Round Begins                 │
-│   (Timer starts at 30s)           │
-└───────────────────┬───────────────┘
-                    ↓
-┌───────────────────────────────────┐
-│   2. Player Pops a Bubble         │
-│   (A combo chain is initiated)    │
-└───────────────────┬───────────────┘
-                    ↓
-┌───────────────────────────────────┐
-│   3. Chain Reaction Spreads       │
-│   (Score & Time increase)         │
-└───────────────────┬───────────────┘
-                    ↓
-┌───────────────────────────────────┐
-│   4. Combo Ends (Times Out)       │
-│   (If combo > 3, a 🌱 Plant grows)  │
-└───────────────────┬───────────────┘
-                    ↓
-┌───────────────────────────────────┐
-│   5. Loop back to Step 2          │
-│   (Player finds a new bubble)     │
-└───────────┬────────────────┬──────┘
-            |                |
-            ↓                ↓
-┌──────────────────┐  ┌────────────────┐
-│ 6a. Timer > 0    │  │ 6b. Timer <= 0 │
-│ (Continue Loop)  │  │ (Round Over)   │
-└──────────────────┘  └──────┬───────┘
-                               |
-                               ↓
-                          ┌────────────────┐
-                          │ 7. Score is    │
-                          │    Submitted   │
-                          └────────────────┘
+1. Round Begins  
+  - Timer starts at 30s
 
+2. Player Pops a Bubble  
+  - A combo chain is initiated
+
+3. Chain Reaction Spreads  
+  - Score & Time increase
+
+4. Combo Ends (Times Out)  
+  - If combo > 3, a 🌱 Plant grows
+
+5. Loop back to Step 2  
+  - Player finds a new bubble
+
+            │
+            ▼
+
+6a. Timer > 0  
+  - Continue Loop
+
+6b. Timer <= 0  
+  - Round Over
+
+7. Score is Submitted
+
+   
 ⚙️ How to Run
 The project is built with Unity 2022.3.x LTS. The startup logic is handled by the GameCoordinator.cs script, which has a simple toggle to switch between modes.
 
