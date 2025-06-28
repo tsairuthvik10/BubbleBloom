@@ -15,6 +15,10 @@ public class GameCoordinator : MonoBehaviour
     public Transform environmentRoot; // The root of your placeholder scan
     public List<Transform> mockAnchorTransforms;
 
+    [Header("On-Site AR Setup (AR Mode Only)")]
+    [Tooltip("This must match the number of anchors you placed in the Augg.io CMS.")]
+    public int expectedAnchorCountInAR = 5;
+
     void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
@@ -30,7 +34,6 @@ public class GameCoordinator : MonoBehaviour
         }
         else
         {
-            // In AR mode, we simply wait for the Augg.io system to create the spawners.
             StartCoroutine(WaitForRealSpawnersAndStartGame());
         }
     }
@@ -51,8 +54,9 @@ public class GameCoordinator : MonoBehaviour
             Instantiate(bubbleClusterSpawnerPrefab, anchorTransform.position, anchorTransform.rotation, environmentRoot);
         }
 
-        // 2. Wait for those spawners to finish creating bubbles.
-        yield return StartCoroutine(WaitForSpawningToComplete());
+        // 2. Calculate how many bubbles to wait for based on the mock setup.
+        int expectedBubbles = mockAnchorTransforms.Count * bubbleClusterSpawnerPrefab.GetComponent<BubbleClusterSpawner>().bubblesInCluster;
+        yield return StartCoroutine(WaitForSpawningToComplete(expectedBubbles));
     }
 
     // This runs in the final AR build.
@@ -61,28 +65,29 @@ public class GameCoordinator : MonoBehaviour
         Debug.Log("Coordinator: Running in AR Mode, waiting for Augg.io spawners.");
         // Give the Augg.io system time to localize and instantiate its objects.
         yield return new WaitForSeconds(3.0f);
-        yield return StartCoroutine(WaitForSpawningToComplete());
+
+        // Calculate how many bubbles to wait for based on the AR setup.
+        int expectedBubbles = expectedAnchorCountInAR * bubbleClusterSpawnerPrefab.GetComponent<BubbleClusterSpawner>().bubblesInCluster;
+        yield return StartCoroutine(WaitForSpawningToComplete(expectedBubbles));
     }
 
     /// <summary>
     /// This coroutine reliably waits until all bubbles have finished spawning before starting the game.
     /// It works by checking if the bubble count is stable.
     /// </summary>
-    private IEnumerator WaitForSpawningToComplete()
+    private IEnumerator WaitForSpawningToComplete(int totalBubblesToWaitFor)
     {
-        Debug.Log("Coordinator: Waiting for bubbles to spawn...");
+        Debug.Log($"Coordinator: Waiting for {totalBubblesToWaitFor} bubbles to spawn...");
 
-        // Give the spawners a moment to run their Start() methods.
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(2.0f); // Initial delay
 
         int lastBubbleCount = -1;
         int currentBubbleCount = 0;
         int stableChecks = 0;
-        int maxChecks = 10; // Failsafe to prevent getting stuck forever
-        int checksDone = 0;
+        int maxWaitFrames = 300; // Failsafe (approx 5 seconds)
+        int frameCount = 0;
 
-        // We check for a stable count to be sure all spawners have finished.
-        while (stableChecks < 3 && checksDone < maxChecks)
+        while (stableChecks < 4 && frameCount < maxWaitFrames)
         {
             currentBubbleCount = GameObject.FindGameObjectsWithTag("Bubble").Length;
 
@@ -96,8 +101,8 @@ public class GameCoordinator : MonoBehaviour
             }
 
             lastBubbleCount = currentBubbleCount;
-            checksDone++;
-            yield return new WaitForSeconds(0.5f); // Wait between checks
+            frameCount++;
+            yield return null; // Wait for the next frame
         }
 
         Debug.Log($"Spawning complete! Found {currentBubbleCount} bubbles.");
