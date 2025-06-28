@@ -24,7 +24,6 @@ public class Bubble : MonoBehaviour
     public void Pop()
     {
         if (hasBeenPopped) return;
-        if (!isActivated && GameManager.Instance != null && GameManager.Instance.currentCombo > 0) return;
 
         hasBeenPopped = true;
 
@@ -45,7 +44,6 @@ public class Bubble : MonoBehaviour
             }
         }
 
-        CancelInvoke("ComboTimeout");
         Destroy(gameObject);
     }
 
@@ -55,7 +53,6 @@ public class Bubble : MonoBehaviour
         isActivated = true;
         if (rend != null) rend.material = activatedMaterial;
         StartCoroutine(ActivationTimer());
-        Invoke("ComboTimeout", activationTime + 0.5f);
     }
 
     private IEnumerator ActivationTimer()
@@ -68,10 +65,5 @@ public class Bubble : MonoBehaviour
     {
         isActivated = false;
         if (rend != null && !hasBeenPopped) rend.material = defaultMaterial;
-    }
-
-    private void ComboTimeout()
-    {
-        if (GameManager.Instance != null) GameManager.Instance.ResetCombo();
     }
 }

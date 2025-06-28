@@ -1508,7 +1508,8 @@ PrefabInstance:
         type: 3}
       propertyPath: plantPrefab
       value: 
-      objectReference: {fileID: 100012, guid: f9f38f77edcc4364bbe69808863d0c83, type: 3}
+      objectReference: {fileID: 4281776281572845444, guid: f46222f20fc39e94e954db9307977347,
+        type: 3}
     - target: {fileID: 5302951619565823022, guid: de7bed052c5a3cd438d1d5e1e55078bf,
         type: 3}
       propertyPath: startingTime
