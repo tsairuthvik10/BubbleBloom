@@ -1,8 +1,8 @@
 using UnityEngine;
 using TMPro;
-using Firebase.Firestore; // Assuming you'll use this for leaderboard
+using Firebase.Firestore;
 using System.Collections;
-using UnityEngine.UI; // Required for LayoutRebuilder
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,7 +14,6 @@ public class UIManager : MonoBehaviour
     public GameObject leaderboardPanel;
     public GameObject profileCreationPanel;
 
-    // We get the animator components from the panels
     private UI_Animator summaryAnimator;
     private UI_Animator leaderboardAnimator;
 
@@ -22,8 +21,10 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI comboText;
     public TextMeshProUGUI timerText;
+    public Color timerWarningColor = Color.red;
+    private Color timerDefaultColor;
 
-    [Header("Summary")]
+    [Header("Summary")] // **THE FIX: These variables were missing.**
     public TextMeshProUGUI summaryScoreText;
     public TextMeshProUGUI summaryComboText;
 
@@ -33,20 +34,21 @@ public class UIManager : MonoBehaviour
     public TMP_Dropdown leaderboardSortDropdown;
 
     [Header("Feedback")]
-    public GameObject floatingTextPrefab; // Assign your new FloatingText_Prefab
-    public Canvas mainCanvas; // Assign your main UI Canvas
+    public GameObject floatingTextPrefab;
+    public Canvas mainCanvas;
 
     private Coroutine scoreTextCoroutine;
     private Coroutine comboTextCoroutine;
+    private Coroutine timerAnimationCoroutine;
+    private int lastDisplayedTime = -1;
 
     void Awake()
     {
         if (Instance != null) { Destroy(gameObject); return; }
         Instance = this;
-
-        // Get the animator components from the panels if they exist
         if (summaryPanel != null) summaryAnimator = summaryPanel.GetComponent<UI_Animator>();
         if (leaderboardPanel != null) leaderboardAnimator = leaderboardPanel.GetComponent<UI_Animator>();
+        if (timerText != null) timerDefaultColor = timerText.color;
     }
 
     void Start()
@@ -56,7 +58,6 @@ public class UIManager : MonoBehaviour
             leaderboardSortDropdown.onValueChanged.AddListener(delegate { OnSortChanged(); });
         }
 
-        // Hide panels on start without animation
         if (summaryPanel != null) summaryPanel.SetActive(false);
         if (leaderboardPanel != null) leaderboardPanel.SetActive(false);
     }
@@ -65,7 +66,7 @@ public class UIManager : MonoBehaviour
     {
         if (scoreText != null)
         {
-            scoreText.text = $"Score: {score}";
+            scoreText.text = $"{score}";
             if (scoreTextCoroutine != null) StopCoroutine(scoreTextCoroutine);
             scoreTextCoroutine = StartCoroutine(AnimateScoreText());
         }
@@ -119,10 +120,48 @@ public class UIManager : MonoBehaviour
 
     public void UpdateTimer(float time)
     {
-        if (timerText != null)
+        if (timerText == null) return;
+
+        int timeInt = Mathf.CeilToInt(time);
+        timerText.text = time > 0 ? $"{timeInt}" : "0";
+
+        if (timeInt <= 10 && timeInt > 0)
         {
-            timerText.text = time > 0 ? $"Time: {Mathf.CeilToInt(time)}" : "Time: 0";
+            if (timeInt != lastDisplayedTime)
+            {
+                lastDisplayedTime = timeInt;
+                if (timerAnimationCoroutine != null) StopCoroutine(timerAnimationCoroutine);
+                timerAnimationCoroutine = StartCoroutine(AnimateTimerText());
+            }
         }
+        else
+        {
+            timerText.color = timerDefaultColor;
+            timerText.transform.localScale = Vector3.one;
+        }
+    }
+
+    private IEnumerator AnimateTimerText()
+    {
+        float duration = 0.5f;
+        timerText.color = timerWarningColor;
+
+        float timer = 0;
+        while (timer < duration / 2)
+        {
+            timerText.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.2f, timer / (duration / 2));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        timer = 0;
+        while (timer < duration / 2)
+        {
+            timerText.transform.localScale = Vector3.Lerp(Vector3.one * 1.2f, Vector3.one, timer / (duration / 2));
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        timerText.transform.localScale = Vector3.one;
     }
 
     public void ShowFloatingScore(int points, Vector3 worldPosition)
@@ -149,8 +188,8 @@ public class UIManager : MonoBehaviour
 
         int finalScore = GameManager.Instance.currentScore;
         int longestCombo = GameManager.Instance.GetSessionLongestCombo();
-        if (summaryScoreText != null) summaryScoreText.text = $"Final Score: {finalScore}";
-        if (summaryComboText != null) summaryComboText.text = $"Best Combo: {longestCombo}";
+        if (summaryScoreText != null) summaryScoreText.text = $"{finalScore}";
+        if (summaryComboText != null) summaryComboText.text = $"{longestCombo}";
 
         if (hudPanel != null) hudPanel.SetActive(false);
 
