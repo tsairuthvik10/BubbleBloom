@@ -153,3 +153,5 @@ MonoBehaviour:
   chainRadius: 5
   defaultMaterial: {fileID: 2100000, guid: 88307bb57d50bb848908610730d04300, type: 2}
   activatedMaterial: {fileID: 2100000, guid: 93c2db316946dd943a6ffb6f7f79b42f, type: 2}
+  chainLinkPrefab: {fileID: 7628654881769749720, guid: 53ee19ff6f0954a4c96e1673a014c588,
+    type: 3}

@@ -44,14 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcdec21a4b382b54a9b339e8b2022791, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hudPanel: {fileID: 0}
   summaryPanel: {fileID: 0}
   leaderboardPanel: {fileID: 0}
-  hudPanel: {fileID: 0}
+  profileCreationPanel: {fileID: 0}
   scoreText: {fileID: 0}
   comboText: {fileID: 0}
+  timerText: {fileID: 0}
+  timerWarningColor: {r: 0.5254902, g: 0.3137255, b: 0.21960786, a: 1}
   summaryScoreText: {fileID: 0}
   summaryComboText: {fileID: 0}
   leaderboardEntryPrefab: {fileID: 8331005143315195694, guid: c925882822e744c4c97f437cc19a1ea7,
     type: 3}
   leaderboardContentArea: {fileID: 0}
   leaderboardSortDropdown: {fileID: 0}
+  floatingTextPrefab: {fileID: 2958190482987032473, guid: 663711dc73629f54cb0aa183c6d304b3,
+    type: 3}
+  mainCanvas: {fileID: 0}
