@@ -4,14 +4,6 @@ A location-based, procedural AR puzzle game built on the Augg.io platform.
 
 ---
 
-## 🎥 Live Demo Video
-
-*(Your 90-second video should be embedded here. It is the most important part of your submission!)*
-
-- ▶️ [Watch the Demo Video on YouTube/Vimeo](#)
-
----
-
 ## ✨ Core Concept
 
 Bubble Bloom transforms real-world scanned locations into magical, playable gardens.  
