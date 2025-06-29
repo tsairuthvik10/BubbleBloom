@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (!isGameActive || levelEnded) return;
-
         currentTime -= Time.deltaTime;
         if (UIManager.Instance != null) UIManager.Instance.UpdateTimer(currentTime);
         if (currentTime <= 0) EndLevel();

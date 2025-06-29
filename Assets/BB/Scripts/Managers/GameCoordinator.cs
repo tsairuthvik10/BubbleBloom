@@ -64,7 +64,7 @@ public class GameCoordinator : MonoBehaviour
     {
         Debug.Log("Coordinator: Running in AR Mode, waiting for Augg.io spawners.");
         // Give the Augg.io system time to localize and instantiate its objects.
-        yield return new WaitForSeconds(3.0f);
+        yield return new WaitForSeconds(5);
 
         // Calculate how many bubbles to wait for based on the AR setup.
         int expectedBubbles = expectedAnchorCountInAR * bubbleClusterSpawnerPrefab.GetComponent<BubbleClusterSpawner>().bubblesInCluster;

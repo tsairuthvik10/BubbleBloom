@@ -46,5 +46,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 1796772751130973810, guid: e5f9ad879d0e8bd4f9bb009a833d5bb8,
     type: 3}
-  bubblesInCluster: 20
+  bubblesInCluster: 4
   spawnRadius: 4
